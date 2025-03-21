@@ -51,6 +51,7 @@ void door_monitoring_run()
         }
 
         // goes to sleep
+        // TODO: update with correct STOP mode to preserve power
         printf("goes to sleep\n");
         k_sleep(K_SECONDS(5));
     }

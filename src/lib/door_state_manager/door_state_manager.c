@@ -2,19 +2,25 @@
 
 #include <stdio.h>
 
+void calibration_initial_door_state(void);
+void intermediate_distance_sensor_check(void);
+void check_sensors(void);
+
+
 void door_state_manager_init(void)
 {
     printf("door_state_manager_init\n");
 
     // TODO LIST:
     // init door state machine
+    // register callback to door state machine when there is change in door state
     // init ambient light sensor
-    // register callback to ambient light sensor
     // init motion sensor
-    // register callback to motion sensor
     // init distance sensor
-    // register callback to distance sensor
+    // set interrupt threshold for motion sensor
+    // set interrupt threshold for light sensor
     // determine initial door state
+    calibration_initial_door_state();
     // set initial door state into door state machine
     // optional, return initial state?
 }
@@ -22,9 +28,49 @@ void door_state_manager_init(void)
 door_state_t door_state_manager_get_state(void)
 {
     // TODO LIST:
+    // check sensors
+    check_sensors();
     // process event that trigger state change
     // if door state is closed, what to do
     // if door state is opened, what to do
     // return current door state based on state machine
     return DOOR_CLOSED;
+}
+
+void calibration_initial_door_state(void)
+{
+    // TODO LIST:
+    // determine initial door state
+    // set initial door state into door state machine
+}
+
+void intermediate_distance_sensor_check(void)
+{
+    
+}
+
+void check_sensors(void)
+{
+    // get current state from door state machine
+    // save this DOOR OPENED or DOOR CLOSED state for comparison at the end
+
+    // check for motion sensor interrupt trigger
+    // process this event that trigger state change
+    // clear the interrupt it it is not auto clear
+    // get current state from door state machine
+
+    // check for light sensor interrupt trigger
+    // process this event that trigger state change
+    // clear the interrupt it it is not auto clear
+    // get current state from door state machine
+
+    // check if current state is state triggered by motion or light sensor
+    // activate distance sensor
+    // start timer for distance measurement timeout
+    // start polling for distance measurement every xxx millisecond until certain threshold is reached or timeout
+    // if threshold reached and previous door state is OPENED, then change state to CLOSED
+    // process this event that trigger state change
+    // if threshold reached and previous door state is CLOSED, then change state to OPENED
+    // process this event that trigger state change
+    // get current state from door state machine
 }
