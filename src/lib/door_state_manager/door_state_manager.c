@@ -28,12 +28,17 @@ void door_state_manager_init(void)
 door_state_t door_state_manager_get_state(void)
 {
     // TODO LIST:
+    // while true loop
+    // if current state is state confirm with distance sensor (meaning door is moving from either open or close state)
+    // call intermediate_distance_sensor_check
+    // add continue so we skip check_sensor to finish the intermediate_distance_sensor_check and exit state confirm with distance sensor
+
     // check sensors
     check_sensors();
     // process event that trigger state change
     // if door state is closed, what to do
     // if door state is opened, what to do
-    // return current door state based on state machine
+    // return current door state based on state machine to break from while loop
     return DOOR_CLOSED;
 }
 
