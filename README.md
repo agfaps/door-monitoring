@@ -27,6 +27,7 @@ Create firmware to sense door status using a combination of accelerometer, ToF s
 - Ambient light sensor placed to detect light inside the room (door closed, no light = 0 lux. Door opened, minimal light = 5 lux)
 - Distance sensor measure distance between door tip and it's frame (Closed: d < 1 cm, Open: d >= 1 cm)
 - Door motion with acceleration 0.1 - 0.2 g is enough
+- Stop mode is used for low power operation of the MCU
 
 ## High level state machine to detect Door State
 
