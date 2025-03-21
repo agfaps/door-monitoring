@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    door_monitoring_start();
+    door_monitoring_init();
     door_monitoring_run();
 
     return 0;
