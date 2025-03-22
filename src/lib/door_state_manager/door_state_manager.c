@@ -33,6 +33,7 @@ door_state_t door_state_manager_get_state(void)
     // while true loop
     // if current state is state confirm with distance sensor (meaning door is moving from either open or close state)
     // call intermediate_distance_sensor_check
+    intermediate_distance_sensor_check();
     // add continue so we skip check_sensor to finish the intermediate_distance_sensor_check and exit state confirm with distance sensor
 
     // check sensors
