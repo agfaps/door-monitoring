@@ -22,6 +22,16 @@ static bool door_state_manager_initialized = false;
 static void check_sensors(void);
 static void door_state_change_handler(door_state_machine_t old_state, door_state_machine_t new_state);
 
+/**
+ * @brief Initializes the door state manager.
+ *
+ * This function initializes the door state manager by setting up the sensors
+ * and the door state machine. It also registers a callback to the door state
+ * machine to handle state changes. The function returns 0 on success and -1
+ * on failure.
+ *
+ * @return 0 on success, -1 on failure.
+ */
 int door_state_manager_init(void)
 {
     printf("door_state_manager_init\n");
@@ -60,6 +70,15 @@ int door_state_manager_init(void)
     return 0;
 }
 
+/**
+ * @brief Gets the current state of the door from the door state manager.
+ *
+ * This function checks the current state of the door based on the sensor readings
+ * and returns the state. The state is one of the values defined in the door_state_t
+ * enumeration.
+ *
+ * @return The current state of the door.
+ */
 door_state_t door_state_manager_get_state(void)
 {
     // make sure door state manager is initialized
@@ -76,6 +95,20 @@ door_state_t door_state_manager_get_state(void)
 }
 
 
+/**
+ * @brief Checks the sensors and processes the events to trigger state changes.
+ *
+ * This function is called periodically to check the sensors and process the events
+ * that trigger state changes in the door state machine. It checks the motion sensor
+ * interrupt trigger, ambient light sensor interrupt trigger, and the distance sensor
+ * reading. If the motion sensor or ambient light sensor interrupt is triggered,
+ * it processes the event that trigger state change by calling the door_state_machine_process_event()
+ * function. If the current state is STATE_CONFIRM_WITH_DISTANCE_SENSOR, it activates the
+ * distance sensor and polls the distance sensor reading for about 5 seconds. If the
+ * distance sensor reading is above the threshold for more than 1 second, it processes
+ * the EVENT_DOOR_OPEN_DETECTED event. If the distance sensor reading is below the
+ * threshold for more than 1 second, it processes the EVENT_DOOR_CLOSE_DETECTED event.
+ */
 static void check_sensors(void)
 {
     // get current state from door state machine
@@ -114,7 +147,7 @@ static void check_sensors(void)
             distance_sensor_activate();
         }
 
-        uint32_t distance = 0;
+        uint32_t distance                       = 0;
         uint16_t count_distance_above_threshold = 0;
         uint16_t count_distance_below_threshold = 0;
 
@@ -158,6 +191,9 @@ static void check_sensors(void)
                     break;
                 }
             }
+
+            // assume sleep 100 ms is enough before getting new distance data
+            k_msleep(100);
         }
     }
 }
