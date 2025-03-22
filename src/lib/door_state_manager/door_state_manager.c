@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include <zephyr/kernel.h>
+
 #include "door_state_manager.h"
 
 #include "door_state_machine.h"
@@ -117,7 +119,10 @@ static void check_sensors(void)
         uint16_t count_distance_below_threshold = 0;
 
         // add logic to poll distance sensor reading for about 5 seconds
-        while (true)
+        int64_t start_time = k_uptime_get();
+        int64_t timeout_ms = 5000; // 5 seconds in milliseconds
+
+        while ((k_uptime_get() - start_time) < timeout_ms)
         {
             if (distance_sensor_is_ready())
             {
@@ -140,6 +145,7 @@ static void check_sensors(void)
                 {
                     printf("Door opened\n");
                     door_state_machine_process_event(EVENT_DOOR_OPEN_DETECTED);
+                    distance_sensor_deactivate();
 
                     break;
                 }
@@ -147,6 +153,7 @@ static void check_sensors(void)
                 {
                     printf("Door closed\n");
                     door_state_machine_process_event(EVENT_DOOR_CLOSE_DETECTED);
+                    distance_sensor_deactivate();
 
                     break;
                 }
