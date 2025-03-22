@@ -23,6 +23,8 @@ void door_monitoring_run()
 
     printf("door_monitoring_run\n");
 
+    k_sleep(K_SECONDS(10));
+
     // get initial door state from door_state_manager
     printf("get initial door state from door_state_manager\n");
     current_state = door_state_manager_get_state();
@@ -53,6 +55,6 @@ void door_monitoring_run()
         // goes to sleep
         // TODO: update with correct STOP mode to preserve power
         printf("goes to sleep\n");
-        k_sleep(K_SECONDS(5));
+        k_sleep(K_SECONDS(20));
     }
 }
