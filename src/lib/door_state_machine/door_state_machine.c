@@ -1,7 +1,8 @@
-#include "door_state_machine.h"
-
 #include <stdio.h>
 #include <stdbool.h>
+
+#include "door_state_machine.h"
+
 
 static door_state_machine_t current_state = STATE_INIT;
 

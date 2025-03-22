@@ -1,7 +1,12 @@
-#include "door_state_manager.h"
-#include "door_state_machine.h"
-
 #include <stdio.h>
+
+#include "door_state_manager.h"
+
+#include "door_state_machine.h"
+#include "ambient_light_sensor.h"
+#include "distance_sensor.h"
+#include "motion_sensor.h"
+
 
 static void calibration_initial_door_state(void);
 static void intermediate_distance_sensor_check(void);

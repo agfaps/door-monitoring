@@ -18,6 +18,7 @@ target_include_directories(
     PRIVATE
     include/application
     include/lib
+    include/sensors
 )
 
 #####################################################################
