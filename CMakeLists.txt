@@ -10,6 +10,7 @@ target_sources(
     src/main.c
     src/application/door_monitoring.c
     src/lib/door_state_manager/door_state_manager.c
+    src/lib/door_state_machine/door_state_machine.c
 )
 
 target_include_directories(

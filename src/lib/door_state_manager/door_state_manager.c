@@ -1,10 +1,11 @@
 #include "door_state_manager.h"
+#include "door_state_machine.h"
 
 #include <stdio.h>
 
-void calibration_initial_door_state(void);
-void intermediate_distance_sensor_check(void);
-void check_sensors(void);
+static void calibration_initial_door_state(void);
+static void intermediate_distance_sensor_check(void);
+static void check_sensors(void);
 
 
 void door_state_manager_init(void)
@@ -13,6 +14,7 @@ void door_state_manager_init(void)
 
     // TODO LIST:
     // init door state machine
+    door_state_machine_init();
     // register callback to door state machine when there is change in door state
     // init ambient light sensor
     // init motion sensor
@@ -42,19 +44,19 @@ door_state_t door_state_manager_get_state(void)
     return DOOR_CLOSED;
 }
 
-void calibration_initial_door_state(void)
+static void calibration_initial_door_state(void)
 {
     // TODO LIST:
     // determine initial door state
     // set initial door state into door state machine
 }
 
-void intermediate_distance_sensor_check(void)
+static void intermediate_distance_sensor_check(void)
 {
     
 }
 
-void check_sensors(void)
+static void check_sensors(void)
 {
     // get current state from door state machine
     // save this DOOR OPENED or DOOR CLOSED state for comparison at the end
