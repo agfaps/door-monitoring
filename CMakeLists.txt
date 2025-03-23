@@ -13,6 +13,7 @@ target_sources(
     src/lib/door_state_machine/door_state_machine.c
     src/sensors/ambient_light_sensor/opt4003dnprq1.c
     src/sensors/motion_sensor/lis2dw12tr.c
+    src/sensors/distance_sensor/vl53l3cx.c
 )
 
 target_include_directories(
@@ -24,6 +25,7 @@ target_include_directories(
     config/
     src/sensors/ambient_light_sensor
     src/sensors/motion_sensor
+    src/sensors/distance_sensor
 )
 
 #####################################################################
