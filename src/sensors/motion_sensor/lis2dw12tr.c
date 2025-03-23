@@ -161,6 +161,48 @@ static void lis2dw12tr_setup(void)
     // Normal power consumption (not low-noise mode)
 
     // WAKE_UP_THS -> this will be using separate method. we will use default value in here, max +- 2g
+
+    // The WAKE_UP_THS register (address 0x34) serves two main purposes:
+
+    // It configures the wake-up threshold (WK_THS[5:0] bits)
+    // It contains configuration bits for tap detection and sleep mode (bit 7 and bit 6)
+    
+    // In your code example, you're writing 0x04 (binary 00000100) to this register, which means:
+    
+    // SINGLE_DOUBLE_TAP (bit 7) = 0: This disables single/double tap distinction
+    // SLEEP_ON (bit 6) = 0: Sleep mode is disabled
+    // WK_THS[5:0] (bits 5-0) = 000100 (decimal 4): Sets the wake-up threshold to 4
+    
+    // How the threshold works:
+    // The wake-up threshold determines how much acceleration is needed to trigger a wake-up event.
+    // As your comment mentions:
+    // /* Each step is 1/64 of full scale (±2g), so threshold of 4 = ~0.125g */
+    // The calculation works like this:
+    
+    // The threshold value is in steps of 1/64 of the selected full scale
+    // If your sensor is configured for ±2g full scale range, then:
+    
+    // 1 LSB (step) = (2g × 2) ÷ 64 = 4g ÷ 64 = 0.0625g
+    // Threshold of 4 = 4 × 0.0625g = 0.25g
+    
+    // (Note: Your comment says ~0.125g, but the actual calculation gives 0.25g for a threshold of 4)
+    // Setting up the register:
+    // To set up this register:
+    
+    // Decide on your desired wake-up threshold based on your application's sensitivity needs
+    // Calculate the register value:
+    
+    // If you want the threshold to be X g, and your full scale is FS:
+    // WK_THS = (X × 64) ÷ (2 × FS)
+    
+    
+    // Set bits 7 and 6 as needed for tap detection and sleep mode
+    // Write the combined value to the LIS2DW12_REG_WAKE_UP_THS register
+    
+    // For a door movement detector, a threshold around 3-5 makes sense as it would detect meaningful
+    // motion while ignoring minor vibrations. The value of 4 you're using would trigger the wake-up
+    // interrupt when acceleration exceeds approximately 0.25g, which is reasonable for detecting door movement.
+
 }
 
 static void lis2dw12tr_init(void)
