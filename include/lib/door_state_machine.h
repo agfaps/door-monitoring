@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-typedef enum {
+typedef enum
+{
     STATE_INIT,
     STATE_DOOR_CLOSED,
     STATE_DOOR_OPEN,
@@ -13,7 +14,8 @@ typedef enum {
     STATE_UNKNOWN
 } door_state_machine_t;
 
-typedef enum {
+typedef enum
+{
     EVENT_POWER_ON,
     EVENT_DOOR_OPEN_DETECTED,
     EVENT_DOOR_CLOSE_DETECTED,

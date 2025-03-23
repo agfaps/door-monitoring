@@ -1,7 +1,8 @@
 #ifndef DOOR_STATE_MANAGER_H
 #define DOOR_STATE_MANAGER_H
 
-typedef enum {
+typedef enum
+{
     DOOR_CLOSED = 0,
     DOOR_OPEN = 1,
     DOOR_UNKNOWN = 2,

@@ -11,7 +11,8 @@ target_sources(
     src/application/door_monitoring.c
     src/lib/door_state_manager/door_state_manager.c
     src/lib/door_state_machine/door_state_machine.c
-    src/sensors/ambient_light/opt4003dnprq1.c
+    src/sensors/ambient_light_sensor/opt4003dnprq1.c
+    src/sensors/motion_sensor/lis2dw12tr.c
 )
 
 target_include_directories(
@@ -21,7 +22,8 @@ target_include_directories(
     include/lib
     include/sensors
     config/
-    src/sensors/ambient_light
+    src/sensors/ambient_light_sensor
+    src/sensors/motion_sensor
 )
 
 #####################################################################

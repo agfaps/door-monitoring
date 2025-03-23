@@ -6,7 +6,8 @@
 
 #include "sensors_config.h"
 
-typedef struct {
+typedef struct
+{
     void (*init)(void);
     void (*set_threshold)(uint16_t low_threshold, uint16_t high_threshold);
     bool (*is_interrupt_triggered)(void);
@@ -21,30 +22,24 @@ typedef struct {
 
 extern const ambient_light_sensor_api_t *ambient_light_sensor_get_api(void);
 
-static inline void ambient_light_sensor_init(void) {
+static inline void ambient_light_sensor_init(void)
+{
     ambient_light_sensor_get_api()->init();
 }
 
-static inline void ambient_light_sensor_set_threshold(uint16_t low_threshold, uint16_t high_threshold) {
+static inline void ambient_light_sensor_set_threshold(uint16_t low_threshold, uint16_t high_threshold)
+{
     ambient_light_sensor_get_api()->set_threshold(low_threshold, high_threshold);
 }
 
-static inline bool ambient_light_sensor_is_interrupt_triggered(void) {
+static inline bool ambient_light_sensor_is_interrupt_triggered(void)
+{
     return ambient_light_sensor_get_api()->is_interrupt_triggered();
 }
 
-static inline void ambient_light_sensor_clear_interrupt(void) {
+static inline void ambient_light_sensor_clear_interrupt(void)
+{
     ambient_light_sensor_get_api()->clear_interrupt();
 }
-
-// void ambient_light_sensor_init() {}
-// void ambient_light_sensor_set_threshold(uint16_t low_threshold, uint16_t high_threshold) {}
-// bool ambient_light_sensor_is_interrupt_triggered() { return true; }
-// void ambient_light_sensor_clear_interrupt() {}
-
-// void ambient_light_sensor_init();
-// void ambient_light_sensor_set_threshold(uint16_t low_threshold, uint16_t high_threshold);
-// bool ambient_light_sensor_is_interrupt_triggered();
-// void ambient_light_sensor_clear_interrupt();
 
 #endif // AMBIENT_LIGHT_SENSOR_H

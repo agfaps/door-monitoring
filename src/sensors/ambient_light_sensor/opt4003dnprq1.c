@@ -24,11 +24,12 @@ static void opt4003dnprq1_clear_interrupt(void)
     printf("opt4003dnprq1_clear_interrupt\n");
 }
 
-static const ambient_light_sensor_api_t opt4003dnprq1_api = {
-    .init = opt4003dnprq1_init,
-    .set_threshold = opt4003dnprq1_set_threshold,
+static const ambient_light_sensor_api_t opt4003dnprq1_api =
+{
+    .init                   = opt4003dnprq1_init,
+    .set_threshold          = opt4003dnprq1_set_threshold,
     .is_interrupt_triggered = opt4003dnprq1_is_interrupt_triggered,
-    .clear_interrupt = opt4003dnprq1_clear_interrupt
+    .clear_interrupt        = opt4003dnprq1_clear_interrupt
 };
 
 const ambient_light_sensor_api_t *ambient_light_sensor_get_api(void)
