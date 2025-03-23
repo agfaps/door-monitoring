@@ -28,6 +28,8 @@ Create firmware to sense door status using a combination of accelerometer, ToF s
 - Distance sensor measure distance between door tip and it's frame (Closed: d < 1 cm, Open: d >= 1 cm)
 - Door motion with acceleration 0.1 - 0.2 g is enough
 - Stop mode is used for low power operation of the MCU
+- Half opened door is regarded as door opened state
+- Distance sensor has 5 seconds timeout when activated
 
 ## High level state machine to detect Door State
 
