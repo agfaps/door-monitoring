@@ -1,2 +1,15 @@
 /{
+    aliases {
+        extint0 = &motion_interrupt;
+    };
+
+    motion_interrupt: motion-interrupt {
+        compatible = "gpio-keys";
+        status = "okay";
+        motion_sensor_int {
+            gpios = <&gpioa 1 GPIO_ACTIVE_HIGH>;
+            label = "Motion Sensor Interrupt";
+        };
+
+    };
 };
