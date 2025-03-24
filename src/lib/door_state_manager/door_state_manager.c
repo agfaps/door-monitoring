@@ -9,12 +9,8 @@
 #include "ambient_light_sensor.h"
 #include "distance_sensor.h"
 #include "motion_sensor.h"
+#include "sensors_config.h"
 
-// Threshold values for sensors
-#define MOTION_THRESHOLD_G          0.5f
-#define LIGHT_LOW_THRESHOLD_LUX     18
-#define LIGHT_HIGH_THRESHOLD_LUX    20
-#define DISTANCE_THRESHOLD_CM       1
 
 static door_state_t door_state             = DOOR_UNKNOWN;
 static bool door_state_manager_initialized = false;
@@ -153,9 +149,8 @@ static void check_sensors(void)
 
         // add logic to poll distance sensor reading for about 5 seconds
         int64_t start_time = k_uptime_get();
-        int64_t timeout_ms = 5000; // 5 seconds in milliseconds
 
-        while ((k_uptime_get() - start_time) < timeout_ms)
+        while ((k_uptime_get() - start_time) < DISTANCE_READING_TIMEOUT_MS)
         {
             if (distance_sensor_is_ready())
             {

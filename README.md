@@ -47,7 +47,9 @@ DOOR_OPEN → [Accel/Light Trigger] → Activate ToF → Measure → Update Stat
 
 This is the layout of the physical part that make the system
 
-IMAGE
+<p align="center">
+  <img src="images/hw-high-level-design.png" alt="HW High-level Design">
+</p>
 
 ## Firmware Architecture
 
