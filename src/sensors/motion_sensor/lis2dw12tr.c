@@ -32,14 +32,13 @@ static void motion_int_callback(const struct device *dev, struct gpio_callback *
     else
     {
         printk("Motion interrupt count #%d triggered\n", motion_int_count);
+        k_sem_give(&motion_int_sem);
     }
-
-    k_sem_give(&motion_int_sem);
 }
 
 static int interrupt_setup(void)
 {
-    int ret;
+    int ret = 0;
 
     if (!device_is_ready(motion_sensor_int.port))
     {
@@ -86,8 +85,8 @@ static int lis2dw12tr_i2c_write_reg(const struct device *i2c_dev, uint8_t reg_ad
 
 static void initial_register_setup(void)
 {
-    uint8_t who_am_i;
-    int ret;
+    uint8_t who_am_i = 0;
+    int ret          = 0;
 
     if (!device_is_ready(motion_sensor_i2c_dev))
     {
@@ -427,7 +426,7 @@ static void lis2dw12tr_init(void)
 
 static void lis2dw12tr_set_threshold(uint8_t threshold)
 {
-    int ret;
+    int ret = 0;
 
     printf("lis2dw12tr_set_threshold\n");
     if (threshold > MAX_WK_THS)
@@ -451,13 +450,21 @@ static void lis2dw12tr_set_threshold(uint8_t threshold)
 
 static bool lis2dw12tr_is_interrupt_triggered(void)
 {
+    int ret = 1;
     printf("lis2dw12tr_is_interrupt_triggered\n");
 
-    k_sem_take(&motion_int_sem, K_FOREVER);
-    motion_int_processed_count++;
+    ret = k_sem_take(&motion_int_sem, K_NO_WAIT);
+    if (ret == 0)
+    {
+        motion_int_processed_count++;
 
-    // if we need to read and process acceleration data
-    printf("Processing accelerometer data #%d\n", motion_int_processed_count);
+        // if we need to read and process acceleration data
+        printf("Processing accelerometer data #%d\n", motion_int_processed_count);
+    }
+    else
+    {
+        printf("No motion interrupt semaphore\n");
+    }
 
     return true;
 }

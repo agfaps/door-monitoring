@@ -1,15 +1,26 @@
 /{
     aliases {
-        extint0 = &motion_interrupt;
+        extint0   = &motion_interrupt;
+        extint1   = &light_interrupt;
         motioni2c = &i2c1;
+        lighti2c  = &i2c1;
     };
 
     motion_interrupt: motion-interrupt {
         compatible = "gpio-keys";
-        status = "okay";
+        status     = "okay";
         motion_sensor_int {
             gpios = <&gpioa 1 GPIO_ACTIVE_HIGH>;
             label = "Motion Sensor Interrupt";
+        };
+    };
+
+    light_interrupt: light-interrupt {
+        compatible = "gpio-keys";
+        status     = "okay";
+        light_sensor_int {
+            gpios = <&gpioa 2 GPIO_ACTIVE_HIGH>;
+            label = "Ambient Light Sensor Interrupt";
         };
     };
 };
