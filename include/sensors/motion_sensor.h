@@ -1,6 +1,7 @@
 #ifndef MOTION_SENSOR_H
 #define MOTION_SENSOR_H
 
+#include <stdint.h>
 #include <stdbool.h>
 
 #include "sensors_config.h"
@@ -8,7 +9,7 @@
 typedef struct
 {
     void (*init)(void);
-    void (*set_threshold)(float threshold);
+    void (*set_threshold)(uint8_t threshold);
     bool (*is_interrupt_triggered)(void);
     void (*clear_interrupt)(void);
 } motion_sensor_api_t;
@@ -26,7 +27,7 @@ static inline void motion_sensor_init(void)
     motion_sensor_get_api()->init();
 }
 
-static inline void motion_sensor_set_threshold(float threshold)
+static inline void motion_sensor_set_threshold(uint8_t threshold)
 {
     motion_sensor_get_api()->set_threshold(threshold);
 }

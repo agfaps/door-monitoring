@@ -6,7 +6,7 @@
 #define DISTANCE_SENSOR_IMPLEMENTATION      VL53L3CX
 
 // Threshold values for sensors
-#define MOTION_THRESHOLD_G          0.5f
+#define MOTION_THRESHOLD_G          4
 #define LIGHT_LOW_THRESHOLD_LUX     18
 #define LIGHT_HIGH_THRESHOLD_LUX    20
 #define DISTANCE_THRESHOLD_CM       1
