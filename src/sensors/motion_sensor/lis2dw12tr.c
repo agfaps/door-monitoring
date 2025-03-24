@@ -27,11 +27,11 @@ static void motion_int_callback(const struct device *dev, struct gpio_callback *
     if (k_sem_count_get(&motion_int_sem) > 0)
     {
         motion_int_missed_count++;
-        printk("Motion interrupt count #%d triggered, prev data skipped\n", motion_int_count);
+        printf("Motion interrupt count #%d triggered, prev data skipped\n", motion_int_count);
     }
     else
     {
-        printk("Motion interrupt count #%d triggered\n", motion_int_count);
+        printf("Motion interrupt count #%d triggered\n", motion_int_count);
         k_sem_give(&motion_int_sem);
     }
 }

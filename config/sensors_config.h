@@ -7,8 +7,8 @@
 
 // Threshold values for sensors
 #define MOTION_THRESHOLD_G          4
-#define LIGHT_LOW_THRESHOLD_LUX     18
-#define LIGHT_HIGH_THRESHOLD_LUX    20
+#define LIGHT_LOW_THRESHOLD_LUX     10
+#define LIGHT_HIGH_THRESHOLD_LUX    40
 #define DISTANCE_THRESHOLD_CM       1
 #define DISTANCE_READING_TIMEOUT_MS 5000    // 5 seconds in milliseconds
 
