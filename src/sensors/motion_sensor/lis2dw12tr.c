@@ -460,13 +460,15 @@ static bool lis2dw12tr_is_interrupt_triggered(void)
 
         // if we need to read and process acceleration data
         printf("Processing accelerometer data #%d\n", motion_int_processed_count);
+
+        return true;
     }
     else
     {
         printf("No motion interrupt semaphore\n");
-    }
 
-    return true;
+        return false;
+    }
 }
 
 static void lis2dw12tr_clear_interrupt(void)

@@ -240,13 +240,15 @@ static bool opt4003dnprq1_is_interrupt_triggered(void)
         // OPT4003 (like most I2C devices) transmits data in big-endian format
         uint16_t status = (status_data[0] << 8) | status_data[1];
         printf("Status register value: 0x%04x\n", status);
+
+        return true;
     }
     else
     {
         printf("No light interrupt semaphore\n");
-    }
 
-    return true;
+        return false;
+    }
 }
 
 static void opt4003dnprq1_clear_interrupt(void)
