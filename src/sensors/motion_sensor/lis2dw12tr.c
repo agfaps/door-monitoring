@@ -64,22 +64,22 @@ static int interrupt_setup(void)
     gpio_init_callback(&motion_int_cb, motion_int_callback, BIT(motion_sensor_int.pin));
     gpio_add_callback(motion_sensor_int.port, &motion_int_cb);
 
-    printf("Motion interrupt is ready\n");
+    // printf("Motion interrupt is ready\n");
 
     return 0;
 }
 
 static int lis2dw12tr_i2c_read_reg(const struct device *i2c_dev, uint8_t reg_addr, uint8_t *value)
 {
-    printf("LIS2DW12TR I2C read reg: 0x%02x\n", reg_addr);
-    // return i2c_reg_read_byte(i2c_dev, LIS2DW12TR_I2C_ADDR, reg_addr, value);
+    // printf("LIS2DW12TR I2C read reg: 0x%02x\n", reg_addr);
+    return i2c_reg_read_byte(i2c_dev, LIS2DW12TR_I2C_ADDR, reg_addr, value);
 
     return 0;
 }
 
 static int lis2dw12tr_i2c_write_reg(const struct device *i2c_dev, uint8_t reg_addr, uint8_t value)
 {
-    printf("LIS2DW12TR I2C write reg: 0x%02x val: 0x%02x\n", reg_addr, value);
+    // printf("LIS2DW12TR I2C write reg: 0x%02x val: 0x%02x\n", reg_addr, value);
     return i2c_reg_write_byte(i2c_dev, LIS2DW12TR_I2C_ADDR, reg_addr, value);
 }
 
@@ -412,7 +412,7 @@ static void initial_register_setup(void)
 
 static void lis2dw12tr_init(void)
 {
-    printf("lis2dw12tr_init\n");
+    // printf("lis2dw12tr_init\n");
 
     if (interrupt_setup() != 0)
     {
@@ -428,7 +428,7 @@ static void lis2dw12tr_set_threshold(uint8_t threshold)
 {
     int ret = 0;
 
-    printf("lis2dw12tr_set_threshold\n");
+    // printf("lis2dw12tr_set_threshold\n");
     if (threshold > MAX_WK_THS)
     {
         printf("Threshold value is out of range, set to MAX_WK_THS\n");
@@ -473,7 +473,7 @@ static bool lis2dw12tr_is_interrupt_triggered(void)
 
 static void lis2dw12tr_clear_interrupt(void)
 {
-    printf("lis2dw12tr_clear_interrupt\n");
+    // printf("lis2dw12tr_clear_interrupt\n");
     // for now it is auto clear
     // LIR     : Latched interrupt disabled
 }

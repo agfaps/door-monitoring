@@ -64,7 +64,7 @@ static int interrupt_setup(void)
     gpio_init_callback(&light_int_cb, light_int_callback, BIT(light_sensor_int.pin));
     gpio_add_callback(light_sensor_int.port, &light_int_cb);
 
-    printf("Ambient light interrupt is ready\n");
+    // printf("Ambient light interrupt is ready\n");
 
     return 0;
 }
@@ -74,7 +74,7 @@ static void initial_register_setup(void)
     uint8_t config[3];
     uint8_t int_config[3];
 
-    printf("initial_register_setup\n");
+    // printf("initial_register_setup\n");
 
     // ===== OPT4003_REG_CONFIG =====
     // Field Breakdown:
@@ -195,7 +195,7 @@ static void initial_register_setup(void)
 
 static void opt4003dnprq1_init(void)
 {
-    printf("opt4003dnprq1_init\n");
+    // printf("opt4003dnprq1_init\n");
 
     if (interrupt_setup() != 0)
     {
@@ -209,7 +209,7 @@ static void opt4003dnprq1_init(void)
 
 static void opt4003dnprq1_set_threshold(uint16_t low_threshold, uint16_t high_threshold)
 {
-    printf("opt4003dnprq1_set_threshold\n");
+    // printf("opt4003dnprq1_set_threshold\n");
 
     uint8_t  threshold_low_data[3]  = {OPT4003_REG_THRESHOLD_L, low_threshold >> 8, low_threshold & 0xFF};
     uint8_t  threshold_high_data[3] = {OPT4003_REG_THRESHOLD_H, high_threshold >> 8, high_threshold & 0xFF};
@@ -256,13 +256,14 @@ static bool opt4003dnprq1_is_interrupt_triggered(void)
         // The interrupt is now cleared
         // OPT4003 (like most I2C devices) transmits data in big-endian format
         uint16_t status = (status_data[0] << 8) | status_data[1];
-        printf("Status register value: 0x%04x\n", status);
+        status = status;    // to remove warning when not printed
+        // printf("Status register value: 0x%04x\n", status);
 
         return true;
     }
     else
     {
-        printf("No light interrupt semaphore\n");
+        // printf("No light interrupt semaphore\n");
 
         return false;
     }
@@ -270,7 +271,7 @@ static bool opt4003dnprq1_is_interrupt_triggered(void)
 
 static void opt4003dnprq1_clear_interrupt(void)
 {
-    printf("opt4003dnprq1_clear_interrupt\n");
+    // printf("opt4003dnprq1_clear_interrupt\n");
 }
 
 static const ambient_light_sensor_api_t opt4003dnprq1_api =

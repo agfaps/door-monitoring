@@ -30,7 +30,7 @@ static void door_state_change_handler(door_state_machine_t old_state, door_state
  */
 int door_state_manager_init(void)
 {
-    printf("door_state_manager_init\n");
+    // printf("door_state_manager_init\n");
 
     // init ambient light sensor
     ambient_light_sensor_init();
@@ -206,7 +206,7 @@ static void check_sensors(void)
  */
 static void door_state_change_handler(door_state_machine_t old_state, door_state_machine_t new_state)
 {
-    printf("State changed: %d -> %d\n", old_state, new_state);
+    // printf("State changed: %d -> %d\n", old_state, new_state);
 
     switch (new_state)
     {

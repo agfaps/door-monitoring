@@ -167,7 +167,7 @@ static int interrupt_setup(void)
     gpio_init_callback(&vl53l3cx_data->int_cb, distance_int_callback, BIT(vl53l3cx_data->distance_sensor_int.pin));
     gpio_add_callback(vl53l3cx_data->distance_sensor_int.port, &vl53l3cx_data->int_cb);
 
-    printf("Distance interrupt is ready\n");
+    // printf("Distance interrupt is ready\n");
 
     return 0;
 }
@@ -525,7 +525,7 @@ static int getSpadInfo(unsigned char *pCount, unsigned char *pTypeIsAperture)
     }
     if (iTimeout == MAX_TIMEOUT) // Check for timeout.
     {
-        printf("Timeout while waiting for SPAD info\n");
+        // printf("Timeout while waiting for SPAD info\n");
         return 0; // Return 0 indicating failure.
     }
 
@@ -1107,7 +1107,7 @@ int tofReadDistance(void)
     // Wait for the device to indicate that the ranging measurement is ready.
     if (vl53l3cx_is_ready())
     {
-        printf("Distance data ready\n");
+        // printf("Distance data ready\n");
         return readRangeContinuousMillimeters(); // Read and return the range result.
     }
     else
@@ -1138,7 +1138,7 @@ static void initial_register_setup(void)
     int bLongRange;
     uint8_t who_am_i;
 
-    printf("initial_register_setup\n");
+    // printf("initial_register_setup\n");
 
     // check who am i register
     ret = vl53l3cx_i2c_reg_read_8(VL53L3CX_REG_WHO_AM_I, &who_am_i);
@@ -1169,7 +1169,7 @@ static void vl53l3cx_init(void)
 {
     int ret_value = 0;
 
-    printf("vl53l3cx_init\n");
+    // printf("vl53l3cx_init\n");
 
     vl53l3cx_data = create_vl53l3cx_data();  
 
@@ -1214,7 +1214,7 @@ static void vl53l3cx_init(void)
  */
 static bool vl53l3cx_is_active(void)
 {
-    printf("vl53l3cx_is_active\n");
+    // printf("vl53l3cx_is_active\n");
 
     return vl53l3cx_data->sensor_active;
 }
@@ -1230,7 +1230,7 @@ static void vl53l3cx_activate(void)
 {
     int ret = 0;
 
-    printf("vl53l3cx_activate\n");
+    // printf("vl53l3cx_activate\n");
 
     // Drive XSHUT high to enable the sensor (active low)
     ret = gpio_pin_set_dt(&vl53l3cx_data->distance_xshut, 1);
@@ -1253,7 +1253,8 @@ static bool vl53l3cx_is_ready(void)
     int ret = 1;
 
     // check interrupt and if there is interrupt, read the distance data
-    ret = k_sem_take(&vl53l3cx_data->distance_int_sem, K_FOREVER);
+    // ret = k_sem_take(&vl53l3cx_data->distance_int_sem, K_FOREVER);
+    ret = k_sem_take(&vl53l3cx_data->distance_int_sem, K_MSEC(100));
 
     if (ret == 0)
     {
@@ -1278,7 +1279,7 @@ static bool vl53l3cx_is_ready(void)
  */
 static uint32_t vl53l3cx_get_distance_mm(void)
 {
-    printf("vl53l3cx_get\n");
+    // printf("vl53l3cx_get\n");
 
     vl53l3cx_data->distance_mm = tofReadDistance();
 
@@ -1307,7 +1308,7 @@ static uint32_t vl53l3cx_get_distance_mm(void)
 static void vl53l3cx_deactivate(void)
 {
     int ret = 0;
-    printf("vl53l3cx_deactivate\n");
+    // printf("vl53l3cx_deactivate\n");
     
     // Drive XSHUT low to disable the sensor (active low)
     ret = gpio_pin_set_dt(&vl53l3cx_data->distance_xshut, 0);
