@@ -13,6 +13,16 @@ static volatile uint32_t distance_int_count           = 0;
 static volatile uint32_t distance_int_processed_count = 0;
 static volatile uint32_t distance_int_missed_count    = 0;
 
+/**
+ * @brief Create a new instance of the VL53L3CX data structure.
+ *
+ * This function allocates and initializes a new VL53L3CX data structure.
+ * The structure is initialized with the I2C device, GPIO pin for the
+ * distance sensor interrupt, GPIO pin for the XSHUT pin, and a zeroed out
+ * distance measurement.
+ *
+ * @return A pointer to the new instance of the VL53L3CX data structure.
+ */
 static vl53l3cx_data_t *create_vl53l3cx_data(void)
 {
     static vl53l3cx_data_t data = {
@@ -34,11 +44,13 @@ static void distance_int_callback(const struct device *dev, struct gpio_callback
     if (k_sem_count_get(&vl53l3cx_data->distance_int_sem) > 0)
     {
         distance_int_missed_count++;
+
         printf("Distance interrupt count #%d triggered, prev data skipped\n", distance_int_count);
     }
     else
     {
         printf("Distance interrupt count #%d triggered\n", distance_int_count);
+
         k_sem_give(&vl53l3cx_data->distance_int_sem);
     }
 }
@@ -50,6 +62,7 @@ static int interrupt_setup(void)
     if (!device_is_ready(vl53l3cx_data->distance_sensor_int.port))
     {
         printf("Distance sensor interrupt is not ready\n");
+
         return -1;
     }
 
@@ -57,6 +70,7 @@ static int interrupt_setup(void)
     if (ret != 0)
     {
         printf("Failed to configure distance sensor pin\n");
+
         return -1;
     }
 
@@ -65,6 +79,7 @@ static int interrupt_setup(void)
     if (ret != 0)
     {
         printf("Failed to configure distance sensor interrupt\n");
+
         return -1;
     }
 
@@ -94,6 +109,7 @@ static void vl53l3cx_init(void)
     if (!gpio_is_ready_dt(&vl53l3cx_data->distance_xshut))
     {
         printf("Distance sensor XSHUT is not ready\n");
+
         return;
     }
 
@@ -104,6 +120,7 @@ static void vl53l3cx_init(void)
     if (ret_value < 0)
     {
         printf("Failed to configure distance sensor XSHUT\n");
+
         return;
     }
 
@@ -115,6 +132,8 @@ static void vl53l3cx_init(void)
     }
 
     initial_register_setup();
+
+    vl53l3cx_data->sensor_ready = true;
 }
 
 
@@ -122,7 +141,8 @@ static void vl53l3cx_init(void)
 static bool vl53l3cx_is_active(void)
 {
     printf("vl53l3cx_is_active\n");
-    return true;
+
+    return vl53l3cx_data->sensor_active;
 }
 
 static void vl53l3cx_activate(void)
@@ -142,18 +162,22 @@ static void vl53l3cx_activate(void)
     {
         // delay for tBOOT (FWBOOT)
         k_msleep(VL53L3CX_BOOT_TIME_MS);
+
+        vl53l3cx_data->sensor_active = true;
     }
 }
 
 static bool vl53l3cx_is_ready(void)
 {
     printf("vl53l3cx_is_ready\n");
-    return true;
+
+    return vl53l3cx_data->sensor_ready;
 }
 
 static uint32_t vl53l3cx_get_distance_mm(void)
 {
     printf("vl53l3cx_get\n");
+
     return vl53l3cx_data->distance_mm;
 }
 
@@ -168,6 +192,10 @@ static void vl53l3cx_deactivate(void)
     if (ret < 0)
     {
         printf("Failed to disable sensor via XSHUT\n");
+    }
+    else
+    {
+        vl53l3cx_data->sensor_active = false;
     }
 }
 
