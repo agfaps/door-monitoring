@@ -121,6 +121,23 @@ static void initial_register_setup(void)
     config[2] = config_value & 0xFF;
     i2c_write(light_sensor_i2c_dev, config, 3, OPT4003Q1_I2C_ADDR);
 
+    // uint16_t config_value = (1 << CONVERSION_TIME) | (3 << OPERATING_MODE) | (1 << LATCH) | (1 << INT_POL);
+    // uint8_t config[3];
+
+    // config[0] = OPT4003_REG_CONFIG;
+    // config[1] = config_value >> 8;
+    // config[2] = config_value & 0xFF;
+
+    // struct i2c_msg msgs[] = {
+    //     {
+    //         .buf = config,
+    //         .len = sizeof(config),
+    //         .flags = I2C_MSG_WRITE | I2C_MSG_STOP,
+    //     },
+    // };
+
+    // int ret = i2c_transfer(light_sensor_i2c_dev, msgs, 1, OPT4003Q1_I2C_ADDR);
+
     // ===== OPT4003_REG_THRESHOLD_L and OPT4003_REG_THRESHOLD_H =====
 
     // In a dark room that can receive light from outside when the door is open, 
