@@ -41,7 +41,7 @@ static inline bool distance_sensor_is_ready(void)
     return distance_sensor_get_api()->is_ready();
 }
 
-static inline uint32_t distance_sensor_get(void)
+static inline uint32_t distance_sensor_get_distance_mm(void)
 {
     return distance_sensor_get_api()->get();
 }

@@ -51,6 +51,21 @@ This is the layout of the physical part that make the system
   <img src="images/hw-high-level-design.png" alt="HW High-level Design">
 </p>
 
+### Connection Table
+
+| Sensor | Pin | Function | Connected to STM32F411CE |
+|--------|-----|----------|--------------|
+| VL53L3CX | XSHUT | Digital input (Active low) | GPIO C14 |
+| VL53L3CX | GPIO1 | Digital output (Interrupt, Open drain) | GPIO A3 |
+| VL53L3CX | SDA | I2C Data | I2C1 |
+| VL53L3CX | SCL | I2C Clock | I2C1 |
+| LIS2DW12TR | SDA | I2C Data | I2C1 |
+| LIS2DW12TR | SCL | I2C Clock | I2C1 |
+| LIS2DW12TR | INT1 | Interrupt | GPIO A2 |
+| OPT4003DNPRQ1 | SDA | I2C Data | I2C1 |
+| OPT4003DNPRQ1 | SCL | I2C Clock | I2C1 |
+| OPT4003DNPRQ1 | INT | Interrupt | GPIO A1 |
+
 ## Firmware Architecture
 
 IMAGE

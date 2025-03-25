@@ -1,9 +1,12 @@
 /{
     aliases {
-        extint0   = &motion_interrupt;
-        extint1   = &light_interrupt;
-        motioni2c = &i2c1;
-        lighti2c  = &i2c1;
+        extint0       = &motion_interrupt;
+        extint1       = &light_interrupt;
+        extint2       = &distance_interrupt;
+        motioni2c     = &i2c1;
+        lighti2c      = &i2c1;
+        distancei2c   = &i2c1;
+        distancexshut = &distance_xshut;
     };
 
     motion_interrupt: motion-interrupt {
@@ -21,6 +24,24 @@
         light_sensor_int {
             gpios = <&gpioa 2 GPIO_ACTIVE_HIGH>;
             label = "Ambient Light Sensor Interrupt";
+        };
+    };
+
+    distance_interrupt: distance-interrupt {
+        compatible = "gpio-keys";
+        status     = "okay";
+        distance_sensor_int {
+            gpios = <&gpioa 3 GPIO_ACTIVE_HIGH>;
+            label = "Distance Sensor Interrupt";
+        };
+    };
+
+    distance_xshut: distance-xshut {
+        compatible = "gpio-keys";
+        status     = "okay";
+        distance_sensor_xshut {
+            gpios = <&gpioc 14 GPIO_ACTIVE_LOW>;
+            label = "Distance Sensor XSHUT";
         };
     };
 };

@@ -156,7 +156,7 @@ static void check_sensors(void)
             {
                 printf("Distance sensor ready\n");
     
-                distance = distance_sensor_get();
+                distance = distance_sensor_get_distance_mm();
 
                 if (distance > DISTANCE_THRESHOLD_CM)
                 {
