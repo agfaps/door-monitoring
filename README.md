@@ -31,10 +31,6 @@ Create firmware to sense door status using a combination of accelerometer, ToF s
 - Half opened door is regarded as door opened state
 - Distance sensor has 5 seconds timeout when activated
 
-## High level state machine to detect Door State
-
-DOOR_CLOSED → [Accel/Light Trigger] → Activate ToF → Measure → Update State → DOOR_OPEN  
-DOOR_OPEN → [Accel/Light Trigger] → Activate ToF → Measure → Update State → DOOR_CLOSED
 
 ## Technical Specification for Door Monitoring Project
 
@@ -68,9 +64,13 @@ This is the layout of the physical part that make the system
 
 ## Firmware Architecture
 
-IMAGE
+<p align="center">
+  <img src="images/fw-arch.png" alt="Firmware Architecture Diagram">
+</p>
 
-## Firmware Design
 
-List of interfaces
+## High level state machine to detect Door State
 
+<p align="center">
+  <img src="images/state-machine.png" alt="State Machine Diagram">
+</p>
