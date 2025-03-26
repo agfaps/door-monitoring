@@ -74,3 +74,7 @@ This is the layout of the physical part that make the system
 <p align="center">
   <img src="images/state-machine.png" alt="State Machine Diagram">
 </p>
+
+## Build
+
+`west build -b blackpill_f411ce`
