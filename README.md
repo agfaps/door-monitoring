@@ -24,12 +24,12 @@ Create firmware to sense door status using a combination of accelerometer, ToF s
 
 - There is no light source inside the room
 - There is light source outside the room
-- Ambient light sensor placed to detect light inside the room (door closed, no light = 0 lux. Door opened, minimal light = 5 lux)
+- Ambient light sensor placed to detect light inside the room (door closed, no light = 0 lux. Door opened, minimal light = 10-40 lux, configurable via `sensors_config.h`)
 - Distance sensor measure distance between door tip and it's frame (Closed: d < 1 cm, Open: d >= 1 cm)
-- Door motion with acceleration 0.1 - 0.2 g is enough
+- Door motion with acceleration 0.25 g is enough (configurable via `sensors_config.h`)
 - Stop mode is used for low power operation of the MCU
 - Half opened door is regarded as door opened state
-- Distance sensor has 5 seconds timeout when activated
+- Distance sensor has 3 seconds timeout when activated (configurable via `sensors_config.h`)
 
 
 ## Technical Specification for Door Monitoring Project
