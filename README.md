@@ -31,10 +31,6 @@ Create firmware to sense door status using a combination of accelerometer, ToF s
 - Half opened door is regarded as door opened state
 - Distance sensor has 5 seconds timeout when activated
 
-## High level state machine to detect Door State
-
-DOOR_CLOSED → [Accel/Light Trigger] → Activate ToF → Measure → Update State → DOOR_OPEN  
-DOOR_OPEN → [Accel/Light Trigger] → Activate ToF → Measure → Update State → DOOR_CLOSED
 
 ## Technical Specification for Door Monitoring Project
 
@@ -51,11 +47,34 @@ This is the layout of the physical part that make the system
   <img src="images/hw-high-level-design.png" alt="HW High-level Design">
 </p>
 
+### Connection Table
+
+| Sensor | Pin | Function | Connected to STM32F411CE |
+|--------|-----|----------|--------------|
+| VL53L3CX | XSHUT | Digital input (Active low) | GPIO C14 |
+| VL53L3CX | GPIO1 | Digital output (Interrupt, Open drain) | GPIO A3 |
+| VL53L3CX | SDA | I2C Data | I2C1 |
+| VL53L3CX | SCL | I2C Clock | I2C1 |
+| LIS2DW12TR | SDA | I2C Data | I2C1 |
+| LIS2DW12TR | SCL | I2C Clock | I2C1 |
+| LIS2DW12TR | INT1 | Interrupt | GPIO A2 |
+| OPT4003DNPRQ1 | SDA | I2C Data | I2C1 |
+| OPT4003DNPRQ1 | SCL | I2C Clock | I2C1 |
+| OPT4003DNPRQ1 | INT | Interrupt | GPIO A1 |
+
 ## Firmware Architecture
 
-IMAGE
+<p align="center">
+  <img src="images/fw-arch.png" alt="Firmware Architecture Diagram">
+</p>
 
-## Firmware Design
 
-List of interfaces
+## High level state machine to detect Door State
 
+<p align="center">
+  <img src="images/state-machine.png" alt="State Machine Diagram">
+</p>
+
+## Build
+
+`west build -b blackpill_f411ce`

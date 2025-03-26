@@ -43,6 +43,7 @@ static int interrupt_setup(void)
     if (!device_is_ready(light_sensor_int.port))
     {
         printf("Ambient light sensor interrupt is not ready\n");
+
         return -1;
     }
 
@@ -50,6 +51,7 @@ static int interrupt_setup(void)
     if (ret != 0)
     {
         printf("Failed to configure ambient light sensor pin\n");
+
         return -1;
     }
 
@@ -58,13 +60,14 @@ static int interrupt_setup(void)
     if (ret != 0)
     {
         printf("Failed to configure ambient light sensor interrupt\n");
+
         return -1;
     }
 
     gpio_init_callback(&light_int_cb, light_int_callback, BIT(light_sensor_int.pin));
     gpio_add_callback(light_sensor_int.port, &light_int_cb);
 
-    printf("Ambient light interrupt is ready\n");
+    // printf("Ambient light interrupt is ready\n");
 
     return 0;
 }
@@ -74,7 +77,7 @@ static void initial_register_setup(void)
     uint8_t config[3];
     uint8_t int_config[3];
 
-    printf("initial_register_setup\n");
+    // printf("initial_register_setup\n");
 
     // ===== OPT4003_REG_CONFIG =====
     // Field Breakdown:
@@ -120,6 +123,23 @@ static void initial_register_setup(void)
     config[1] = config_value >> 8;
     config[2] = config_value & 0xFF;
     i2c_write(light_sensor_i2c_dev, config, 3, OPT4003Q1_I2C_ADDR);
+
+    // uint16_t config_value = (1 << CONVERSION_TIME) | (3 << OPERATING_MODE) | (1 << LATCH) | (1 << INT_POL);
+    // uint8_t config[3];
+
+    // config[0] = OPT4003_REG_CONFIG;
+    // config[1] = config_value >> 8;
+    // config[2] = config_value & 0xFF;
+
+    // struct i2c_msg msgs[] = {
+    //     {
+    //         .buf = config,
+    //         .len = sizeof(config),
+    //         .flags = I2C_MSG_WRITE | I2C_MSG_STOP,
+    //     },
+    // };
+
+    // int ret = i2c_transfer(light_sensor_i2c_dev, msgs, 1, OPT4003Q1_I2C_ADDR);
 
     // ===== OPT4003_REG_THRESHOLD_L and OPT4003_REG_THRESHOLD_H =====
 
@@ -178,7 +198,7 @@ static void initial_register_setup(void)
 
 static void opt4003dnprq1_init(void)
 {
-    printf("opt4003dnprq1_init\n");
+    // printf("opt4003dnprq1_init\n");
 
     if (interrupt_setup() != 0)
     {
@@ -192,7 +212,7 @@ static void opt4003dnprq1_init(void)
 
 static void opt4003dnprq1_set_threshold(uint16_t low_threshold, uint16_t high_threshold)
 {
-    printf("opt4003dnprq1_set_threshold\n");
+    // printf("opt4003dnprq1_set_threshold\n");
 
     uint8_t  threshold_low_data[3]  = {OPT4003_REG_THRESHOLD_L, low_threshold >> 8, low_threshold & 0xFF};
     uint8_t  threshold_high_data[3] = {OPT4003_REG_THRESHOLD_H, high_threshold >> 8, high_threshold & 0xFF};
@@ -233,25 +253,29 @@ static bool opt4003dnprq1_is_interrupt_triggered(void)
         if (ret_val != 0)
         {
             printf("Failed to read status register: %d\n", ret_val);
+
             return ret_val;
         }
         
         // The interrupt is now cleared
         // OPT4003 (like most I2C devices) transmits data in big-endian format
         uint16_t status = (status_data[0] << 8) | status_data[1];
-        printf("Status register value: 0x%04x\n", status);
+        status = status;    // to remove warning when not printed
+        // printf("Status register value: 0x%04x\n", status);
+
+        return true;
     }
     else
     {
-        printf("No light interrupt semaphore\n");
-    }
+        // printf("No light interrupt semaphore\n");
 
-    return true;
+        return false;
+    }
 }
 
 static void opt4003dnprq1_clear_interrupt(void)
 {
-    printf("opt4003dnprq1_clear_interrupt\n");
+    // printf("opt4003dnprq1_clear_interrupt\n");
 }
 
 static const ambient_light_sensor_api_t opt4003dnprq1_api =
