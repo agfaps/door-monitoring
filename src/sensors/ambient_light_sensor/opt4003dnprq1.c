@@ -43,6 +43,7 @@ static int interrupt_setup(void)
     if (!device_is_ready(light_sensor_int.port))
     {
         printf("Ambient light sensor interrupt is not ready\n");
+
         return -1;
     }
 
@@ -50,6 +51,7 @@ static int interrupt_setup(void)
     if (ret != 0)
     {
         printf("Failed to configure ambient light sensor pin\n");
+
         return -1;
     }
 
@@ -58,6 +60,7 @@ static int interrupt_setup(void)
     if (ret != 0)
     {
         printf("Failed to configure ambient light sensor interrupt\n");
+
         return -1;
     }
 
@@ -250,6 +253,7 @@ static bool opt4003dnprq1_is_interrupt_triggered(void)
         if (ret_val != 0)
         {
             printf("Failed to read status register: %d\n", ret_val);
+
             return ret_val;
         }
         

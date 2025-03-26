@@ -44,7 +44,7 @@ unsigned char ucDefTuning[]   = {
 static vl53l3cx_data_t *vl53l3cx_data;
 
 // for debugging purposes
-static volatile uint32_t distance_int_count             = 0;
+static volatile uint32_t distance_int_count           = 0;
 static volatile uint32_t distance_int_processed_count = 0;
 static volatile uint32_t distance_int_missed_count    = 0;
 
@@ -429,7 +429,8 @@ static int writeMulti(unsigned char ucAddr, unsigned char *pBuf, int iCount)
     struct i2c_msg msgs[1];
     int ret;
 
-    if (iCount > 16) {
+    if (iCount > 16)
+    {
         return -1; // Error: Data too large
     }
 
@@ -442,7 +443,8 @@ static int writeMulti(unsigned char ucAddr, unsigned char *pBuf, int iCount)
 
     ret = i2c_transfer(vl53l3cx_data->i2c_dev, msgs, 1, VL53L3CX_I2C_ADDR);
 
-    if (ret < 0) {
+    if (ret < 0)
+    {
         return ret; // Return the error code from i2c_transfer
     }
 
@@ -494,6 +496,7 @@ static int readMulti(unsigned char ucAddr, unsigned char *pBuf, int iCount)
     if (ret < 0)
     {
         printf("I2C readMulti failed: %d", ret);
+
         return -1; // Indicate error
     }
 
@@ -516,16 +519,18 @@ static int getSpadInfo(unsigned char *pCount, unsigned char *pTypeIsAperture)
     writeRegList(ucSPAD1); // Write another list of register/value pairs to configure SPAD settings.
 
     iTimeout = 0;
-    while(iTimeout < MAX_TIMEOUT) // Loop with a timeout.
+    while (iTimeout < MAX_TIMEOUT) // Loop with a timeout.
     {
         if (vl53l3cx_i2c_reg_read_8_ret(0x83) != 0x00) break; // Read register 0x83. If it's not 0, break the loop.
         // This likely waits for a specific status flag to indicate SPAD information readiness.
         iTimeout++;
         k_msleep(5); // Wait for 5 milliseconds. (k_msleep suggests this is for Zephyr RTOS or similar)
     }
+
     if (iTimeout == MAX_TIMEOUT) // Check for timeout.
     {
         // printf("Timeout while waiting for SPAD info\n");
+
         return 0; // Return 0 indicating failure.
     }
 
@@ -564,6 +569,7 @@ static int performSingleRefCalibration(uint8_t vhv_init_byte)
         iTimeout++;
         // usleep(5000);
         k_msleep(5);
+
         if (iTimeout > 100) { return 0; }
     }
 
@@ -576,18 +582,18 @@ static int performSingleRefCalibration(uint8_t vhv_init_byte)
 
 static uint32_t timeoutMclksToMicroseconds(uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks)
 {
-  uint32_t macro_period_ns = calcMacroPeriod(vcsel_period_pclks);
+    uint32_t macro_period_ns = calcMacroPeriod(vcsel_period_pclks);
 
-  return ((timeout_period_mclks * macro_period_ns) + (macro_period_ns / 2)) / 1000;
+    return ((timeout_period_mclks * macro_period_ns) + (macro_period_ns / 2)) / 1000;
 }
 
 // Convert sequence step timeout from microseconds to MCLKs with given VCSEL period in PCLKs
 // based on VL53L0X_calc_timeout_mclks()
 static uint32_t timeoutMicrosecondsToMclks(uint32_t timeout_period_us, uint8_t vcsel_period_pclks)
 {
-  uint32_t macro_period_ns = calcMacroPeriod(vcsel_period_pclks);
+    uint32_t macro_period_ns = calcMacroPeriod(vcsel_period_pclks);
 
-  return (((timeout_period_us * 1000) + (macro_period_ns / 2)) / macro_period_ns);
+    return (((timeout_period_us * 1000) + (macro_period_ns / 2)) / macro_period_ns);
 }
 
 // Encode sequence step timeout register value from timeout in MCLKs
@@ -596,24 +602,27 @@ static uint32_t timeoutMicrosecondsToMclks(uint32_t timeout_period_us, uint8_t v
 // is always a uint16_t.
 static uint16_t encodeTimeout(uint16_t timeout_mclks)
 {
-  // format: "(LSByte * 2^MSByte) + 1"
+    // format: "(LSByte * 2^MSByte) + 1"
 
-  uint32_t ls_byte = 0;
-  uint16_t ms_byte = 0;
+    uint32_t ls_byte = 0;
+    uint16_t ms_byte = 0;
 
-  if (timeout_mclks > 0)
-  {
-    ls_byte = timeout_mclks - 1;
-
-    while ((ls_byte & 0xFFFFFF00) > 0)
+    if (timeout_mclks > 0)
     {
-      ls_byte >>= 1;
-      ms_byte++;
-    }
+        ls_byte = timeout_mclks - 1;
 
-    return (ms_byte << 8) | (ls_byte & 0xFF);
-  }
-  else { return 0; }
+        while ((ls_byte & 0xFFFFFF00) > 0)
+        {
+            ls_byte >>= 1;
+            ms_byte++;
+        }
+
+        return (ms_byte << 8) | (ls_byte & 0xFF);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 // Decode sequence step timeout in MCLKs from register value
@@ -649,7 +658,7 @@ static void getSequenceStepTimeouts(uint8_t enables, SequenceStepTimeouts * time
 
     if (enables & SEQUENCE_ENABLE_PRE_RANGE)
     {
-    timeouts->final_range_mclks -= timeouts->pre_range_mclks;
+        timeouts->final_range_mclks -= timeouts->pre_range_mclks;
     }
 
     timeouts->final_range_us =
@@ -692,65 +701,66 @@ static int setMeasurementTimingBudget(uint32_t budget_us)
 
     if (enables & SEQUENCE_ENABLE_TCC)
     {
-    used_budget_us += (timeouts.msrc_dss_tcc_us + TccOverhead);
+        used_budget_us += (timeouts.msrc_dss_tcc_us + TccOverhead);
     }
 
     if (enables & SEQUENCE_ENABLE_DSS)
     {
-    used_budget_us += 2 * (timeouts.msrc_dss_tcc_us + DssOverhead);
+        used_budget_us += 2 * (timeouts.msrc_dss_tcc_us + DssOverhead);
     }
     else if (enables & SEQUENCE_ENABLE_MSRC)
     {
-    used_budget_us += (timeouts.msrc_dss_tcc_us + MsrcOverhead);
+        used_budget_us += (timeouts.msrc_dss_tcc_us + MsrcOverhead);
     }
 
     if (enables & SEQUENCE_ENABLE_PRE_RANGE)
     {
-    used_budget_us += (timeouts.pre_range_us + PreRangeOverhead);
+        used_budget_us += (timeouts.pre_range_us + PreRangeOverhead);
     }
 
     if (enables & SEQUENCE_ENABLE_FINAL_RANGE)
     {
-    used_budget_us += FinalRangeOverhead;
+        used_budget_us += FinalRangeOverhead;
 
-    // "Note that the final range timeout is determined by the timing
-    // budget and the sum of all other timeouts within the sequence.
-    // If there is no room for the final range timeout, then an error
-    // will be set. Otherwise the remaining time will be applied to
-    // the final range."
+        // "Note that the final range timeout is determined by the timing
+        // budget and the sum of all other timeouts within the sequence.
+        // If there is no room for the final range timeout, then an error
+        // will be set. Otherwise the remaining time will be applied to
+        // the final range."
 
-    if (used_budget_us > budget_us)
-    {
-        // "Requested timeout too big."
-        return 0;
+        if (used_budget_us > budget_us)
+        {
+            // "Requested timeout too big."
+            return 0;
+        }
+
+        final_range_timeout_us = budget_us - used_budget_us;
+
+        // set_sequence_step_timeout() begin
+        // (SequenceStepId == VL53L0X_SEQUENCESTEP_FINAL_RANGE)
+
+        // "For the final range timeout, the pre-range timeout
+        //  must be added. To do this both final and pre-range
+        //  timeouts must be expressed in macro periods MClks
+        //  because they have different vcsel periods."
+
+        final_range_timeout_mclks =
+            timeoutMicrosecondsToMclks(final_range_timeout_us,
+                                        timeouts.final_range_vcsel_period_pclks);
+
+        if (enables & SEQUENCE_ENABLE_PRE_RANGE)
+        {
+            final_range_timeout_mclks += timeouts.pre_range_mclks;
+        }
+
+        writeReg16(FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI,
+            encodeTimeout(final_range_timeout_mclks));
+
+        // set_sequence_step_timeout() end
+
+        measurement_timing_budget_us = budget_us; // store for internal reuse
     }
 
-    final_range_timeout_us = budget_us - used_budget_us;
-
-    // set_sequence_step_timeout() begin
-    // (SequenceStepId == VL53L0X_SEQUENCESTEP_FINAL_RANGE)
-
-    // "For the final range timeout, the pre-range timeout
-    //  must be added. To do this both final and pre-range
-    //  timeouts must be expressed in macro periods MClks
-    //  because they have different vcsel periods."
-
-    final_range_timeout_mclks =
-        timeoutMicrosecondsToMclks(final_range_timeout_us,
-                                    timeouts.final_range_vcsel_period_pclks);
-
-    if (enables & SEQUENCE_ENABLE_PRE_RANGE)
-    {
-        final_range_timeout_mclks += timeouts.pre_range_mclks;
-    }
-
-    writeReg16(FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI,
-        encodeTimeout(final_range_timeout_mclks));
-
-    // set_sequence_step_timeout() end
-
-    measurement_timing_budget_us = budget_us; // store for internal reuse
-    }
     return 1;
 }
 
@@ -786,137 +796,138 @@ static int setVcselPulsePeriod(vcselPeriodType type, uint8_t period_pclks)
 
     if (type == VcselPeriodPreRange)
     {
-    // "Set phase check limits"
-    switch (period_pclks)
-    {
-        case 12:
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x18);
-        break;
+        // "Set phase check limits"
+        switch (period_pclks)
+        {
+            case 12:
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x18);
+            break;
 
-        case 14:
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x30);
-        break;
+            case 14:
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x30);
+            break;
 
-        case 16:
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x40);
-        break;
+            case 16:
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x40);
+            break;
 
-        case 18:
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x50);
-        break;
+            case 18:
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x50);
+            break;
 
-        default:
-        // invalid period
-        return 0;
-    }
-    vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_LOW, 0x08);
+            default:
+            // invalid period
+            return 0;
+        }
 
-    // apply new VCSEL period
-    vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VCSEL_PERIOD, vcsel_period_reg);
+        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VALID_PHASE_LOW, 0x08);
 
-    // update timeouts
+        // apply new VCSEL period
+        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(PRE_RANGE_CONFIG_VCSEL_PERIOD, vcsel_period_reg);
 
-    // set_sequence_step_timeout() begin
-    // (SequenceStepId == VL53L0X_SEQUENCESTEP_PRE_RANGE)
+        // update timeouts
 
-    uint16_t new_pre_range_timeout_mclks =
-        timeoutMicrosecondsToMclks(timeouts.pre_range_us, period_pclks);
+        // set_sequence_step_timeout() begin
+        // (SequenceStepId == VL53L0X_SEQUENCESTEP_PRE_RANGE)
 
-    writeReg16(PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI,
-        encodeTimeout(new_pre_range_timeout_mclks));
+        uint16_t new_pre_range_timeout_mclks =
+            timeoutMicrosecondsToMclks(timeouts.pre_range_us, period_pclks);
 
-    // set_sequence_step_timeout() end
+        writeReg16(PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI,
+            encodeTimeout(new_pre_range_timeout_mclks));
 
-    // set_sequence_step_timeout() begin
-    // (SequenceStepId == VL53L0X_SEQUENCESTEP_MSRC)
+        // set_sequence_step_timeout() end
 
-    uint16_t new_msrc_timeout_mclks =
-        timeoutMicrosecondsToMclks(timeouts.msrc_dss_tcc_us, period_pclks);
+        // set_sequence_step_timeout() begin
+        // (SequenceStepId == VL53L0X_SEQUENCESTEP_MSRC)
 
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(MSRC_CONFIG_TIMEOUT_MACROP,
-        (new_msrc_timeout_mclks > 256) ? 255 : (new_msrc_timeout_mclks - 1));
+        uint16_t new_msrc_timeout_mclks =
+            timeoutMicrosecondsToMclks(timeouts.msrc_dss_tcc_us, period_pclks);
 
-    // set_sequence_step_timeout() end
+            vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(MSRC_CONFIG_TIMEOUT_MACROP,
+            (new_msrc_timeout_mclks > 256) ? 255 : (new_msrc_timeout_mclks - 1));
+
+        // set_sequence_step_timeout() end
     }
     else if (type == VcselPeriodFinalRange)
     {
-    switch (period_pclks)
-    {
-        case 8:
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x10);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_LOW,  0x08);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(GLOBAL_CONFIG_VCSEL_WIDTH, 0x02);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_CONFIG_TIMEOUT, 0x0C);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x01);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_LIM, 0x30);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x00);
-        break;
+        switch (period_pclks)
+        {
+            case 8:
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x10);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_LOW,  0x08);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(GLOBAL_CONFIG_VCSEL_WIDTH, 0x02);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_CONFIG_TIMEOUT, 0x0C);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x01);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_LIM, 0x30);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x00);
+            break;
 
-        case 10:
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x28);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_LOW,  0x08);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(GLOBAL_CONFIG_VCSEL_WIDTH, 0x03);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_CONFIG_TIMEOUT, 0x09);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x01);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_LIM, 0x20);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x00);
-        break;
+            case 10:
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x28);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_LOW,  0x08);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(GLOBAL_CONFIG_VCSEL_WIDTH, 0x03);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_CONFIG_TIMEOUT, 0x09);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x01);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_LIM, 0x20);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x00);
+            break;
 
-        case 12:
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x38);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_LOW,  0x08);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(GLOBAL_CONFIG_VCSEL_WIDTH, 0x03);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_CONFIG_TIMEOUT, 0x08);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x01);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_LIM, 0x20);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x00);
-        break;
+            case 12:
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x38);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_LOW,  0x08);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(GLOBAL_CONFIG_VCSEL_WIDTH, 0x03);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_CONFIG_TIMEOUT, 0x08);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x01);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_LIM, 0x20);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x00);
+            break;
 
-        case 14:
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x48);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_LOW,  0x08);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(GLOBAL_CONFIG_VCSEL_WIDTH, 0x03);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_CONFIG_TIMEOUT, 0x07);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x01);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_LIM, 0x20);
-        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x00);
-        break;
+            case 14:
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x48);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VALID_PHASE_LOW,  0x08);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(GLOBAL_CONFIG_VCSEL_WIDTH, 0x03);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_CONFIG_TIMEOUT, 0x07);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x01);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(ALGO_PHASECAL_LIM, 0x20);
+                vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(0xFF, 0x00);
+            break;
 
-        default:
-        // invalid period
-        return 0;
-    }
+            default:
+            // invalid period
+            return 0;
+        }
 
-    // apply new VCSEL period
-    vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VCSEL_PERIOD, vcsel_period_reg);
+        // apply new VCSEL period
+        vl53l3cx_i2c_reg_write_8bit_addr_8bit_val(FINAL_RANGE_CONFIG_VCSEL_PERIOD, vcsel_period_reg);
 
-    // update timeouts
+        // update timeouts
 
-    // set_sequence_step_timeout() begin
-    // (SequenceStepId == VL53L0X_SEQUENCESTEP_FINAL_RANGE)
+        // set_sequence_step_timeout() begin
+        // (SequenceStepId == VL53L0X_SEQUENCESTEP_FINAL_RANGE)
 
-    // "For the final range timeout, the pre-range timeout
-    //  must be added. To do this both final and pre-range
-    //  timeouts must be expressed in macro periods MClks
-    //  because they have different vcsel periods."
+        // "For the final range timeout, the pre-range timeout
+        //  must be added. To do this both final and pre-range
+        //  timeouts must be expressed in macro periods MClks
+        //  because they have different vcsel periods."
 
-    uint16_t new_final_range_timeout_mclks =
-        timeoutMicrosecondsToMclks(timeouts.final_range_us, period_pclks);
+        uint16_t new_final_range_timeout_mclks =
+            timeoutMicrosecondsToMclks(timeouts.final_range_us, period_pclks);
 
-    if (enables & SEQUENCE_ENABLE_PRE_RANGE)
-    {
-        new_final_range_timeout_mclks += timeouts.pre_range_mclks;
-    }
+        if (enables & SEQUENCE_ENABLE_PRE_RANGE)
+        {
+            new_final_range_timeout_mclks += timeouts.pre_range_mclks;
+        }
 
-    writeReg16(FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI,
-    encodeTimeout(new_final_range_timeout_mclks));
+        writeReg16(FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI,
+        encodeTimeout(new_final_range_timeout_mclks));
 
-    // set_sequence_step_timeout end
+        // set_sequence_step_timeout end
     }
     else
     {
-    // invalid type
-    return 0;
+        // invalid type
+        return 0;
     }
 
     // "Finally, the timing budget must be re-applied"
@@ -957,29 +968,30 @@ static uint32_t getMeasurementTimingBudget(void)
 
     if (enables & SEQUENCE_ENABLE_TCC)
     {
-    budget_us += (timeouts.msrc_dss_tcc_us + TccOverhead);
+        budget_us += (timeouts.msrc_dss_tcc_us + TccOverhead);
     }
 
     if (enables & SEQUENCE_ENABLE_DSS)
     {
-    budget_us += 2 * (timeouts.msrc_dss_tcc_us + DssOverhead);
+        budget_us += 2 * (timeouts.msrc_dss_tcc_us + DssOverhead);
     }
     else if (enables & SEQUENCE_ENABLE_MSRC)
     {
-    budget_us += (timeouts.msrc_dss_tcc_us + MsrcOverhead);
+        budget_us += (timeouts.msrc_dss_tcc_us + MsrcOverhead);
     }
 
     if (enables & SEQUENCE_ENABLE_PRE_RANGE)
     {
-    budget_us += (timeouts.pre_range_us + PreRangeOverhead);
+        budget_us += (timeouts.pre_range_us + PreRangeOverhead);
     }
 
     if (enables & SEQUENCE_ENABLE_FINAL_RANGE)
     {
-    budget_us += (timeouts.final_range_us + FinalRangeOverhead);
+        budget_us += (timeouts.final_range_us + FinalRangeOverhead);
     }
 
     measurement_timing_budget_us = budget_us; // store for internal reuse
+
     return budget_us;
 }
 
@@ -1149,6 +1161,7 @@ static void initial_register_setup(void)
     )
     {
         printf("VL53L3CX not detected\n");
+
         return;
     }
 

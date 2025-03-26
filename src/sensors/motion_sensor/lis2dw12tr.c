@@ -43,6 +43,7 @@ static int interrupt_setup(void)
     if (!device_is_ready(motion_sensor_int.port))
     {
         printf("Motion sensor interrupt is not ready\n");
+
         return -1;
     }
 
@@ -50,6 +51,7 @@ static int interrupt_setup(void)
     if (ret != 0)
     {
         printf("Failed to configure motion sensor pin\n");
+
         return -1;
     }
 
@@ -58,6 +60,7 @@ static int interrupt_setup(void)
     if (ret != 0)
     {
         printf("Failed to configure motion sensor interrupt\n");
+
         return -1;
     }
 
@@ -80,6 +83,7 @@ static int lis2dw12tr_i2c_read_reg(const struct device *i2c_dev, uint8_t reg_add
 static int lis2dw12tr_i2c_write_reg(const struct device *i2c_dev, uint8_t reg_addr, uint8_t value)
 {
     // printf("LIS2DW12TR I2C write reg: 0x%02x val: 0x%02x\n", reg_addr, value);
+
     return i2c_reg_write_byte(i2c_dev, LIS2DW12TR_I2C_ADDR, reg_addr, value);
 }
 
@@ -91,6 +95,7 @@ static void initial_register_setup(void)
     if (!device_is_ready(motion_sensor_i2c_dev))
     {
         printf("Motion sensor I2C is not ready\n");
+
         return;
     }
 
@@ -101,8 +106,8 @@ static void initial_register_setup(void)
     {
         printf("Failed to read LIS2DW12TR_WHO_AM_I_REG register\n");
 
-        // skipped for testing
-        // return;
+        // comment for testing
+        return;
     }
 
     // ====== CTRL1 Configuration ======
@@ -133,8 +138,9 @@ static void initial_register_setup(void)
     if (ret < 0)
     {
         printf("Failed to write LIS2DW12TR_CTRL1_REG register\n");
-        // skipped for testing
-        // return;
+        
+        // comment for testing
+        return;
     }
 
     // ====== CTRL2 Configuration ======
@@ -166,8 +172,9 @@ static void initial_register_setup(void)
     if (ret < 0)
     {
         printf("Failed to write LIS2DW12TR_CTRL2_REG register\n");
-        // skipped for testing
-        // return;
+
+        // comment for testing
+        return;
     }
 
     // ====== CTRL3 Configuration ======
@@ -196,8 +203,9 @@ static void initial_register_setup(void)
     if (ret < 0)
     {
         printf("Failed to write LIS2DW12TR_CTRL3_REG register\n");
-        // skipped for testing
-        // return;
+
+        // comment for testing
+        return;
     }
 
     // ====== LIS2DW12TR_CTRL4_INT1_PAD_CTRL_REG Configuration ======
@@ -225,8 +233,9 @@ static void initial_register_setup(void)
     if (ret < 0)
     {
         printf("Failed to write LIS2DW12TR_CTRL4_INT1_PAD_CTRL_REG register\n");
-        // skipped for testing
-        // return;
+
+        // comment for testing
+        return;
     }
 
     // ====== LIS2DW12TR_CTRL5_INT2_PAD_CTRL_REG Configuration ======
@@ -276,8 +285,9 @@ static void initial_register_setup(void)
     if (ret < 0)
     {
         printf("Failed to write LIS2DW12TR_CTRL6_REG register\n");
-        // skipped for testing
-        // return;
+
+        // comment for testing
+        return;
     }
 
     // ====== LIS2DW12TR_WAKE_UP_THS_REG Configuration ======
@@ -324,8 +334,9 @@ static void initial_register_setup(void)
     if (ret < 0)
     {
         printf("Failed to write LIS2DW12TR_WAKE_UP_THS_REG register\n");
-        // skipped for testing
-        // return;
+
+        // comment for testing
+        return;
     }
 
     // ====== LIS2DW12TR_WAKE_UP_DUR_REG Configuration ======
@@ -368,8 +379,9 @@ static void initial_register_setup(void)
     if (ret < 0)
     {
         printf("Failed to write LIS2DW12TR_WAKE_UP_DUR_REG register\n");
-        // skipped for testing
-        // return;
+
+        // comment for testing
+        return;
     }
 
 
@@ -405,8 +417,9 @@ static void initial_register_setup(void)
     if (ret < 0)
     {
         printf("Failed to write LIS2DW12TR_CTRL7_REG register\n");
-        // skipped for testing
-        // return;
+
+        // comment for testing
+        return;
     }
 }
 
@@ -451,7 +464,7 @@ static void lis2dw12tr_set_threshold(uint8_t threshold)
 static bool lis2dw12tr_is_interrupt_triggered(void)
 {
     int ret = 1;
-    printf("lis2dw12tr_is_interrupt_triggered\n");
+    // printf("lis2dw12tr_is_interrupt_triggered\n");
 
     ret = k_sem_take(&motion_int_sem, K_NO_WAIT);
     if (ret == 0)
@@ -465,7 +478,7 @@ static bool lis2dw12tr_is_interrupt_triggered(void)
     }
     else
     {
-        printf("No motion interrupt semaphore\n");
+        // printf("No motion interrupt semaphore\n");
 
         return false;
     }

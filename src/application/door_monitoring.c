@@ -4,10 +4,10 @@
 #include <stdio.h>
 
 #include <zephyr/kernel.h>
-#include <zephyr/pm/pm.h>
-#include <zephyr/pm/policy.h>
-#include <zephyr/pm/device.h>
-#include <zephyr/pm/state.h>
+// #include <zephyr/pm/pm.h>
+// #include <zephyr/pm/policy.h>
+// #include <zephyr/pm/device.h>
+// #include <zephyr/pm/state.h>
 
 #include "door_state_manager.h"
 
@@ -34,7 +34,8 @@ void door_monitoring_run()
     current_state = door_state_manager_get_state();
 
     /* Configure PM policy to allow entering STOP mode */
-    pm_policy_state_lock_get(PM_STATE_SUSPEND_TO_IDLE, PM_ALL_SUBSTATES);
+    // still not working
+    // pm_policy_state_lock_get(PM_STATE_SUSPEND_TO_IDLE, PM_ALL_SUBSTATES);
 
     // entering forever loop
     // printf("entering forever loop\n");
@@ -56,7 +57,7 @@ void door_monitoring_run()
         else
         {
             // if same, print NO CHANGE
-            printf("DOOR STATE: NO CHANGE\n");
+            // printf("DOOR STATE: NO CHANGE\n");
         }
 
         // goes to sleep

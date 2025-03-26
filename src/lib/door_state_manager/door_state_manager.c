@@ -135,6 +135,9 @@ static void check_sensors(void)
 
     if (current_state == STATE_CONFIRM_WITH_DISTANCE_SENSOR)
     {
+        // wait about 2 seconds before acquiring distance data
+        k_sleep(K_SECONDS(2));
+
         if (!distance_sensor_is_active())
         {
             printf("Activating distance sensor\n");
@@ -147,7 +150,7 @@ static void check_sensors(void)
         uint16_t count_distance_above_threshold = 0;
         uint16_t count_distance_below_threshold = 0;
 
-        // add logic to poll distance sensor reading for about 5 seconds
+        // add logic to poll distance sensor reading for about 3 seconds
         int64_t start_time = k_uptime_get();
 
         while ((k_uptime_get() - start_time) < DISTANCE_READING_TIMEOUT_MS)
@@ -169,19 +172,21 @@ static void check_sensors(void)
                     count_distance_below_threshold++;
                 }
 
-                if (count_distance_above_threshold > 0)
+                if (count_distance_above_threshold > DISTANCE_MINIMUM_SAMPLES_COUNT)
                 {
                     printf("Door opened\n");
                     door_state_machine_process_event(EVENT_DOOR_OPEN_DETECTED);
                     distance_sensor_deactivate();
+                    count_distance_above_threshold = 0;
 
                     break;
                 }
-                else if (count_distance_below_threshold > 0)
+                else if (count_distance_below_threshold > DISTANCE_MINIMUM_SAMPLES_COUNT)
                 {
                     printf("Door closed\n");
                     door_state_machine_process_event(EVENT_DOOR_CLOSE_DETECTED);
                     distance_sensor_deactivate();
+                    count_distance_below_threshold = 0;
 
                     break;
                 }
